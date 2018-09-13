@@ -1,4 +1,5 @@
-# coding:utf-8
+#!/usr/bin/env python
+# -*- coding: utf-8 -*
 import gym # Open AI gym
 import numpy as np
 import time
@@ -8,7 +9,7 @@ MAX_STEPS = 200 # max number of steps every episodes
 NUM_DIZITIZED = 5 # number of digitized observing data
 NUM_CONSECUTIVE_ITERATIONS = 100 # number of reward storing for ending condition
 NUM_EPISODES = 2000 #max iteration episodes
-GOAL_AVERAGE_REWARD = 195 #reward reference total value
+GOAL_AVERAGE_REWARD = 300#195 #reward reference total value
 
 # Generate vector has 'num' numbers from 'clip_min' to 'clip_max'
 def bins(clip_min, clip_max, num):
@@ -47,12 +48,18 @@ def updateQTable(q_table, state, action, reward, nex_state):
 
 if __name__=='__main__':
     env = gym.make('CartPole-v0') # game mode
+    # define [1296,2] q_table array -1 to 1
     q_table = np.random.uniform(
             low=-1, high=1, size=(NUM_DIZITIZED**4,env.action_space.n))
-    total_reward_vec = np.zeros(NUM_CONSECUTIVE_ITERATIONS) # vector has reward of each execution
-    final_x = np.zeros((NUM_EPISODES, 1)) # when learning has finished, position is stored by each t=200 execution.
+
+    # this has reward of each execution
+    total_reward_vec = np.zeros(NUM_CONSECUTIVE_ITERATIONS)
+
+    # when learning has finished, position is stored in this each t=200 execution.
+    final_x = np.zeros((NUM_EPISODES, 1))
+
     islearned = False # flag learning has finished
-    isrender = False # flag rendering 
+    isrendered = False # flag rendering has finished
 
     for episode in range(NUM_EPISODES):
         # initialize environment
@@ -66,26 +73,31 @@ if __name__=='__main__':
             if islearned:
                 env.render() # depict cartpole
                 time.sleep(0.1)
-                #print (observation[0]) # cart position
+                print (observation[0]) # cart position
 
             # evaluate s_{t+1} and r_{t} from execution the action a_t.
             observation, reward, done, info = env.step(action)
-            print reward
 
             # give reward
-            if done: # game over
+            if done: # game finished
                 if t < 195:
                     reward = -200
                 else:
                     reward = 1
 
             else: # keep standing
-                reward = 1
+                # be centor
+                if -0.6 < observation[0] and observation[0] < 0.6:
+                    reward = 2
+                else:
+                    reward = 1
 
             episode_reward += reward # add reward
 
-            # deside discrete state s_{t+1}, and update Q-function
+            # update state s_{t+1}
             next_state = digitizeState(observation)
+
+            # update q table
             q_table = updateQTable(q_table, state, action, reward, next_state)
 
             # deside next action a_{t+1}
@@ -94,9 +106,9 @@ if __name__=='__main__':
             state = next_state
 
             # process when program finished
-            if done: # game over
-                #print('%d Episode finished after %f time steps / mean %f' %
-                #      (episode, t + 1, total_reward_vec.mean()))
+            if done: # game finished
+                print('%d Episode finished after %f time steps / mean %f' %
+                      (episode, t + 1, total_reward_vec.mean()))
                 total_reward_vec = np.hstack((total_reward_vec[1:],
                                             episode_reward))
 
@@ -106,13 +118,13 @@ if __name__=='__main__':
         
         # success conditions
         if (total_reward_vec.mean() >= GOAL_AVERAGE_REWARD):
-            #print('Episode %d train agent successfuly!' % episode)
+            print('Episode %d train agent successfuly!' % episode)
             islearned = True
             # save success movie
-            if isrender == False:
+            if isrendered == False:
                 #if you want to save this movie, please uncomment following line.
                 #env = gym.wrappers.Monitor(env, './movie/cartpole-experiment-1')
-                isrender = True
+                isrendered = True
                     
     if islearned:
         np.savetxt('final_x.csv',final_x,delimiter=",")

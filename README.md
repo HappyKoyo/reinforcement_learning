@@ -13,12 +13,21 @@ press -a- the cart move left
 press -d- the cart move right  
 ```
 
-## cartpole.py  
-This program is playing cartpole using rainforcement learning.  
+## cartpole_ql.py  
+This program is playing cartpole using q-learning.  
 
 ```
 How to use  
-$ python cartpole.py  
+$ python cartpole_ql.py  
 you can see learned motion in cartpole.
 ```
+
+## cartpole_dqn.py
+This program is playing cartpole using deep-q-network
+
+```
+How to use
+$ python cartpole_dqn.py
+```
+
 
