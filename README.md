@@ -48,8 +48,8 @@ DQN_MODE = 0    # 0:DDQN 1:DQN
 
 If program operated correctly, you can see the reward mean as following.  
 
-![SuccessDQN](https://github.com/HappyKoyo/reinforcement_learning/tree/master/result_images/dqn_success.jpg "success")
+![SuccessDQN](https://user-images.githubusercontent.com/23475978/46568978-f5b7d180-c988-11e8-9550-236f5f3d388d.jpg "success")
 
 Sometime (about once to 10 times) learning is failed as following.  
 
-![FailedDQN](https://github.com/HappyKoyo/reinforcement_learning/tree/master/result_images/dqn_failed.jpg "failed")
+![FailedDQN](https://user-images.githubusercontent.com/23475978/46568995-4e876a00-c989-11e8-9dbf-7e913197c4fb.jpg "failed")
